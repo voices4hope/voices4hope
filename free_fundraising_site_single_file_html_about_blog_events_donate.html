@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Fundraising Club</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121834;
+      --text: #f4f6ff;
+      --muted: #b9c1ff;
+      --accent: #7c9bff;
+      --accent-2: #9ef0ff;
+      --warning: #ffd166;
+      --success: #7ef6d7;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; }
+    a { color: var(--accent-2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    header { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(140%) blur(8px); background: rgba(11,16,32,.7); border-bottom: 1px solid rgba(255,255,255,.08); }
+    .nav { display:flex; align-items:center; gap: 16px; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight: 800; letter-spacing:.3px; }
+    .brand .dot { width:10px; height:10px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-radius:50%; box-shadow: 0 0 0 4px rgba(124,155,255,.15); }
+    .spacer { flex:1; }
+    .nav a { padding: 10px 12px; border-radius: 12px; color: var(--text); opacity:.9; }
+    .nav a.active, .cta { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#071019; font-weight:700; box-shadow: var(--shadow); }
+    .cta { padding:10px 14px; border-radius: 12px; }
+    main { padding-top: 24px; }
+    .hero { display:grid; grid-template-columns: 1.1fr .9fr; gap:24px; align-items:center; }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.09); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .p24 { padding:24px; }
+    h1 { font-size: clamp(28px, 3.2vw, 42px); margin: 0 0 10px; }
+    h2 { font-size: clamp(22px, 2.4vw, 30px); margin: 6px 0 14px; }
+    h3 { margin: 14px 0 6px; }
+    .muted { color: var(--muted); }
+    .grid { display:grid; gap:16px; }
+    @media (min-width: 900px){ .grid.cols-3 { grid-template-columns: repeat(3,1fr); } }
+    @media (max-width: 900px){ .hero { grid-template-columns: 1fr; } }
+    .tag { display:inline-block; font-size:12px; padding:4px 8px; border-radius: 999px; background: rgba(124,155,255,.2); color: var(--accent-2); margin-right:6px; }
+    .badge { font-size:12px; color:#071019; background: var(--success); padding:4px 8px; border-radius:999px; font-weight:700; }
+    .list { display:flex; flex-direction:column; gap:12px; }
+    .post, .event, .note { border:1px solid rgba(255,255,255,.08); border-radius: var(--radius); padding:16px; background: rgba(255,255,255,.02); }
+    .post h3, .event h3 { margin:0 0 8px; }
+    .row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .meta { font-size:13px; color: var(--muted); }
+    .footer { margin: 40px 0 20px; color: var(--muted); font-size:14px; text-align:center; }
+    .notice { border-left:4px solid var(--warning); padding:10px 12px; background: rgba(255,209,102,.12); border-radius: 10px; }
+    .input, textarea { width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); color: var(--text); }
+    .input:focus, textarea:focus { outline:2px solid rgba(124,155,255,.35); }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.06); color: var(--text); cursor:pointer; }
+    .btn:hover { background: rgba(255,255,255,.1); }
+    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#071019; font-weight:800; }
+    .hidden { display:none; }
+    .embed { aspect-ratio: 16/9; width:100%; border:0; border-radius: 12px; }
+    .pill { display:inline-block; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,.08); font-size:12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand"><span class="dot"></span> <span id="site-title">Learn & Lift Club</span></div>
+      <div class="spacer"></div>
+      <nav class="nav" id="nav"></nav>
+      <a href="#/donate" class="cta">Donate</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- ROUTES -->
+
+    <section data-route="home" class="route">
+      <div class="hero">
+        <div class="card p24">
+          <h1 id="hero-title">We tutor. We fundraise. We show up.</h1>
+          <p class="muted" id="hero-sub">A teen-led volunteer club supporting cancer & diabetes causes through peer tutoring and community events.</p>
+          <div class="row" style="margin-top:16px; gap:10px;">
+            <a class="btn primary" href="#/donate">Donate now</a>
+            <a class="btn" href="#/events">See upcoming events</a>
+          </div>
+          <div style="margin-top:14px" class="row">
+            <span class="pill">100% free platform</span>
+            <span class="pill">Student-run</span>
+            <span class="pill">Tax-deductible? <span class="muted">(edit if applicable)</span></span>
+          </div>
+        </div>
+        <div class="card p24">
+          <h2>Latest updates</h2>
+          <div id="latest-posts" class="list"></div>
+        </div>
+      </div>
+
+      <div class="grid cols-3" style="margin-top:20px;">
+        <div class="card p24">
+          <h3>Our impact</h3>
+          <p class="muted">Add a short stat line here (hours volunteered, funds raised, students helped).</p>
+        </div>
+        <div class="card p24">
+          <h3>Join the club</h3>
+          <p class="muted">Add your sign-up link or contact info below.</p>
+          <a class="btn" href="#/contact">Contact us</a>
+        </div>
+        <div class="card p24">
+          <h3>Partners</h3>
+          <p class="muted">Shout out partners/sponsors here.</p>
+        </div>
+      </div>
+    </section>
+
+    <section data-route="about" class="route hidden">
+      <div class="card p24">
+        <h1>About Us</h1>
+        <p class="muted">We’re a student-led group raising funds for cancer and diabetes support. Replace this text with your story: why you started, what you do, and how donations help.</p>
+        <div style="margin-top:10px;">
+          <span class="tag">volunteer</span>
+          <span class="tag">tutoring</span>
+          <span class="tag">community</span>
+        </div>
+      </div>
+      <div class="card p24" style="margin-top:16px;">
+        <h2>Team</h2>
+        <div class="grid cols-3" id="team"></div>
+      </div>
+    </section>
+
+    <section data-route="blog" class="route hidden">
+      <div class="card p24">
+        <h1>Blog</h1>
+        <div id="posts" class="list"></div>
+      </div>
+    </section>
+
+    <section data-route="events" class="route hidden">
+      <div class="card p24">
+        <h1>Events</h1>
+        <p class="muted">Add your upcoming events below. You can also embed a public Google Calendar (optional).</p>
+        <div id="events" class="list" style="margin-top:16px;"></div>
+      </div>
+      <div class="card p24" style="margin-top:16px;">
+        <h2>Calendar (optional)</h2>
+        <div class="notice">Replace the <strong>src</strong> of the iframe with your public Google Calendar embed link (Settings → Integrate calendar → Public).</div>
+        <iframe class="embed" src="" title="Calendar"></iframe>
+      </div>
+    </section>
+
+    <section data-route="donate" class="route hidden">
+      <div class="card p24">
+        <h1>Donate</h1>
+        <p class="muted">100% free setup via Zeffy or PayPal. Use one—or both. Edit this page to include your real links.</p>
+        <div class="grid" style="margin-top:12px; gap:12px;">
+          <div class="post">
+            <h3>Zeffy (no fees)</h3>
+            <p class="muted">Create a free Zeffy donation form/page and paste the embed link in the iframe below.</p>
+            <div class="notice">Paste your Zeffy embed URL into the <strong>src</strong> attribute of this iframe.</div>
+            <iframe class="embed" id="zeffy-embed" src="" title="Zeffy Donation"></iframe>
+            <div class="row" style="margin-top:10px;">
+              <a class="btn" id="zeffy-link" href="#" target="_blank">Open donation page</a>
+            </div>
+          </div>
+          <div class="post">
+            <h3>PayPal Donate (fallback)</h3>
+            <p class="muted">If you have a PayPal account, you can generate a donate button and paste the link here.</p>
+            <a class="btn" id="paypal-link" href="#" target="_blank">Donate via PayPal</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section data-route="contact" class="route hidden">
+      <div class="card p24">
+        <h1>Contact</h1>
+        <p class="muted">Fill in your real contact details or use a free form tool (like Google Forms) and link it here.</p>
+        <div class="grid" style="gap:12px; margin-top:8px;">
+          <input class="input" placeholder="Your name" />
+          <input class="input" placeholder="Email" />
+          <textarea rows="5" placeholder="Message"></textarea>
+          <button class="btn primary" onclick="alert('Replace with a real form or mailto link.')">Send</button>
+        </div>
+      </div>
+      <div class="card p24" style="margin-top:16px;">
+        <h2>Quick Links</h2>
+        <div class="row" style="gap:10px; flex-wrap:wrap;">
+          <a class="btn" href="#/donate">Donate</a>
+          <a class="btn" href="#/events">Events</a>
+          <a class="btn" href="#/blog">Blog</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- /ROUTES -->
+
+    <p class="footer">© <span id="year"></span> <span id="org-name">Learn & Lift Club</span> · Built with a single free HTML file. Host on GitHub Pages / Neocities / InfinityFree.</p>
+  </main>
+
+  <script>
+    // ======== EDIT THIS CONFIG ONLY ========
+    const SITE = {
+      title: "Learn & Lift Club",
+      orgName: "Learn & Lift Club",
+      heroTitle: "We tutor. We fundraise. We show up.",
+      heroSub: "A teen-led volunteer club supporting cancer & diabetes causes.",
+      nav: [
+        { label: "Home", route: "home" },
+        { label: "About", route: "about" },
+        { label: "Blog", route: "blog" },
+        { label: "Events", route: "events" },
+        { label: "Donate", route: "donate" },
+        { label: "Contact", route: "contact" },
+      ],
+      // Paste your Zeffy and PayPal links here (optional)
+      zeffy: {
+        pageUrl: "", // e.g. https://www.zeffy.com/en-CA/donation-form/your-form
+        embedUrl: ""  // e.g. https://www.zeffy.com/embed/donation-form/your-form
+      },
+      paypal: {
+        donateUrl: "" // e.g. https://www.paypal.com/donate/?hosted_button_id=XXXXX
+      },
+      team: [
+        { name: "Indira G.", role: "Founder", blurb: "Student organizer & tutor.", img: "" },
+        { name: "A. Patel", role: "Events Lead", blurb: "Runs drives & raffles.", img: "" },
+        { name: "J. Kim", role: "Finance Lead", blurb: "Manages donations.", img: "" },
+      ],
+      posts: [
+        { title: "Kickoff Tutoring Night", date: "2025-09-01", tags:["tutoring","launch"], html: "We launched our first tutoring night and raised $215. ❤" },
+        { title: "Bake Sale Recap", date: "2025-08-20", tags:["fundraising"], html: "Huge thanks to everyone who baked and bought!" },
+      ],
+      events: [
+        { title:"Peer Tutoring Drop‑in", date:"2025-09-12", time:"4:00–6:00 PM", location:"Room 204 / Zoom", details:"Free math help. Donations welcome.", link:"#" },
+        { title:"Charity 3v3 Basketball", date:"2025-09-27", time:"10:00 AM", location:"School Gym", details:"Teams of 3, $5 suggested donation.", link:"#" },
+      ]
+    };
+    // ======== END CONFIG ========
+
+    // DOM helpers
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    // Set titles & nav
+    $('#site-title').textContent = SITE.title;
+    $('#org-name').textContent = SITE.orgName;
+    $('#year').textContent = new Date().getFullYear();
+    $('#hero-title').textContent = SITE.heroTitle;
+    $('#hero-sub').textContent = SITE.heroSub;
+
+    // Build nav
+    const navEl = $('#nav');
+    SITE.nav.forEach(item => {
+      const a = document.createElement('a');
+      a.href = `#/${item.route}`;
+      a.textContent = item.label;
+      navEl.appendChild(a);
+    });
+
+    // Simple router
+    function showRoute(route){
+      $$('.route').forEach(s => s.classList.add('hidden'));
+      const el = document.querySelector(`[data-route="${route}"]`);
+      if(el) el.classList.remove('hidden');
+      // set active nav
+      $$('#nav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === `#/${route}`));
+      // default donate CTA state too
+      if(route === 'donate') {
+        // nothing special here
+      }
+    }
+    window.addEventListener('hashchange', () => showRoute(location.hash.replace('#/','') || 'home'));
+
+    // Initial route
+    if(!location.hash) location.hash = '#/home';
+    showRoute(location.hash.replace('#/',''));
+
+    // Render team
+    const teamGrid = $('#team');
+    if(teamGrid){
+      SITE.team.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'post';
+        const img = m.img ? `<img src="${m.img}" alt="${m.name}" style="width:100%; height:160px; object-fit:cover; border-radius:12px; margin-bottom:10px;"/>` : '';
+        card.innerHTML = `${img}<h3>${m.name}</h3><div class="meta">${m.role}</div><p class="muted">${m.blurb}</p>`;
+        teamGrid.appendChild(card);
+      });
+    }
+
+    // Render posts (blog)
+    const postsList = $('#posts');
+    const latestPosts = $('#latest-posts');
+    const sortedPosts = [...SITE.posts].sort((a,b)=> new Date(b.date) - new Date(a.date));
+    function renderPost(p){
+      const div = document.createElement('div');
+      div.className = 'post';
+      div.innerHTML = `
+        <h3>${p.title}</h3>
+        <div class="row"><span class="meta">${new Date(p.date).toLocaleDateString()}</span>
+          ${p.tags?.map(t=>`<span class='tag'>${t}</span>`).join('')||''}
+        </div>
+        <p>${p.html}</p>`;
+      return div;
+    }
+    if(postsList){ sortedPosts.forEach(p => postsList.appendChild(renderPost(p))); }
+    if(latestPosts){ sortedPosts.slice(0,3).forEach(p => latestPosts.appendChild(renderPost(p))); }
+
+    // Render events
+    const eventsList = $('#events');
+    if(eventsList){
+      SITE.events.forEach(e => {
+        const div = document.createElement('div');
+        div.className = 'event';
+        div.innerHTML = `
+          <h3>${e.title}</h3>
+          <div class="meta">${e.date} · ${e.time} · ${e.location}</div>
+          <p class="muted">${e.details}</p>
+          <a class="btn" href="${e.link}" target="_blank">Details</a>`;
+        eventsList.appendChild(div);
+      });
+    }
+
+    // Donation links
+    if(SITE.zeffy){
+      const zLink = $('#zeffy-link');
+      const zFrame = $('#zeffy-embed');
+      if(zLink && SITE.zeffy.pageUrl){ zLink.href = SITE.zeffy.pageUrl; }
+      if(zFrame && SITE.zeffy.embedUrl){ zFrame.src = SITE.zeffy.embedUrl; }
+    }
+    if(SITE.paypal){
+      const pLink = $('#paypal-link');
+      if(pLink && SITE.paypal.donateUrl){ pLink.href = SITE.paypal.donateUrl; }
+    }
+
+    // Accessibility: keyboard focus ring on nav
+    $$('#nav a, .btn').forEach(el=>{
+      el.addEventListener('keyup', e=>{ if(e.key==='Enter'){ el.click(); } });
+    });
+  </script>
+
+  <!--
+  ==========================
+  HOW TO USE (Free Forever)
+  ==========================
+  1) Click the Donate tab → paste your Zeffy embed/page URLs into the SITE.zeffy fields at the top of the JS.
+     • Zeffy is 100% free for donations. You can also set a PayPal donate URL as a backup.
+  2) Edit the SITE object to change your title, posts, events, and team.
+  3) Host it for free:
+     • GitHub Pages: create a repo, add this file as index.html, enable Pages.
+     • Neocities: upload this file and it’s live.
+     • InfinityFree: upload as htdocs/index.html.
+  4) For a calendar: make your Google Calendar public, copy the embed URL, and paste it into the Calendar iframe src.
+  5) For a contact form: swap the button for a Google Form link or a mailto: email link.
+
+  No plugins, no trials, no locked features. Just edit text.
+  -->
+</body>
+</html>
